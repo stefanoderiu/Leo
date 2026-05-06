@@ -351,12 +351,15 @@ function calcola() {
     const variazioni = [];
 
     for (let i = 0; i < 63; i++) {
-        const base = produzione[i];
-        const nuovo = risultato[i];
-        const perc = ((nuovo - base) / base) * 100;
-        variazioni.push(perc);
-        document.getElementById("var"+i).textContent = formatPerc1(perc);
-    }
+    const base = produzione[i];
+    const nuovo = risultato[i];
+
+    // Arrotondamento alla prima cifra decimale
+    const perc = Math.round(((nuovo - base) / base) * 1000) / 10;
+
+    variazioni.push(perc);
+    document.getElementById("var"+i).textContent = formatPerc1(perc);
+}
 
     aggiornaGrafico(variazioni);
 }
