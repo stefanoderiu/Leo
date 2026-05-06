@@ -40,6 +40,21 @@
 let M = null;
 
 // -----------------------------
+// FUNZIONI DI FORMATTAZIONE ITALIANA
+// -----------------------------
+function formatIT(num) {
+    return num
+        .toFixed(0)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function formatPerc(num) {
+    return num
+        .toFixed(0)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "%";
+}
+
+// -----------------------------
 // 63 SETTORI
 // -----------------------------
 const settori = [
@@ -148,10 +163,10 @@ for (let i = 0; i < 63; i++) {
 
     tr.innerHTML = `
         <td>${settori[i]}</td>
-        <td>${domandaFinale[i].toFixed(3)}</td>
+        <td>${formatIT(domandaFinale[i])}</td>
         <td><input id="policy${i}" type="number" step="0.0001" value="0"></td>
         <td id="nuova${i}"></td>
-        <td>${produzione[i].toFixed(3)}</td>
+        <td>${formatIT(produzione[i])}</td>
         <td id="ris${i}"></td>
         <td id="var${i}"></td>
     `;
@@ -173,13 +188,12 @@ window.addEventListener("DOMContentLoaded", function() {
             M = righe.map(riga =>
                 riga
                     .trim()
-                    .split(/\t+/)                 // separa per TAB
-                    .map(v => v.trim())           // rimuove spazi
-                    .filter(v => v !== "")        // elimina celle vuote
-                    .map(v => parseFloat(v.replace(",", "."))) // virgola → punto
+                    .split(/\t+/)
+                    .map(v => v.trim())
+                    .filter(v => v !== "")
+                    .map(v => parseFloat(v.replace(",", ".")))
             );
 
-            // Controllo righe
             for (let i = 0; i < 63; i++) {
                 if (M[i].length !== 63 || M[i].some(isNaN)) {
                     console.error("Errore riga", i+1, M[i]);
@@ -203,16 +217,14 @@ function calcola() {
         return;
     }
 
-    // Colonna 3 — nuova domanda finale
     const nuova = [];
     for (let i = 0; i < 63; i++) {
         const pol = parseFloat(document.getElementById("policy"+i).value);
         const val = domandaFinale[i] + pol;
         nuova.push(val);
-        document.getElementById("nuova"+i).textContent = val.toFixed(3);
+        document.getElementById("nuova"+i).textContent = formatIT(val);
     }
 
-    // Colonna 5 — M × nuova
     const risultato = new Array(63).fill(0);
     for (let i = 0; i < 63; i++) {
         let somma = 0;
@@ -220,21 +232,21 @@ function calcola() {
             somma += M[i][j] * nuova[j];
         }
         risultato[i] = somma;
-        document.getElementById("ris"+i).textContent = somma.toFixed(3);
+        document.getElementById("ris"+i).textContent = formatIT(somma);
     }
 
-    // Colonna 6 — variazione %
     for (let i = 0; i < 63; i++) {
         const base = produzione[i];
         const nuovo = risultato[i];
         const perc = ((nuovo - base) / base) * 100;
-        document.getElementById("var"+i).textContent = perc.toFixed(2) + "%";
+        document.getElementById("var"+i).textContent = formatPerc(perc);
     }
 }
 </script>
 
 </body>
 </html>
+
 
 
 
