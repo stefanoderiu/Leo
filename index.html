@@ -40,14 +40,8 @@
 let M = null;
 
 // -----------------------------
-// FORMATTAZIONE ITALIANA
+// SOLO FORMATO PERCENTUALE
 // -----------------------------
-function formatIT(num) {
-    return Number(num)
-        .toFixed(0)
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
 function formatPerc(num) {
     let n = Number(num);
     let sign = n < 0 ? "-" : "";
@@ -131,7 +125,7 @@ const settori = [
 ];
 
 // -----------------------------
-// DOMANDA FINALE
+// DOMANDA FINALE (valori grezzi)
 // -----------------------------
 const domandaFinale = [
 9370,3168,797,-85328,92937,53170,-1515,4186,652,39113,
@@ -144,7 +138,7 @@ const domandaFinale = [
 ];
 
 // -----------------------------
-// PRODUZIONE
+// PRODUZIONE (valori grezzi)
 // -----------------------------
 const produzione = [
 66367.0084,3865.69353,1473.46688,8561.82371,184307.919,97610.30622,
@@ -161,7 +155,7 @@ const produzione = [
 ];
 
 // -----------------------------
-// CREA LA TABELLA
+// CREA LA TABELLA (senza formatIT)
 // -----------------------------
 const tbody = document.querySelector("#tabella tbody");
 
@@ -170,10 +164,10 @@ for (let i = 0; i < 63; i++) {
 
     tr.innerHTML = `
         <td>${settori[i]}</td>
-        <td>${formatIT(domandaFinale[i])}</td>
+        <td>${domandaFinale[i]}</td>
         <td><input id="policy${i}" type="number" step="0.0001" value="0"></td>
         <td id="nuova${i}"></td>
-        <td>${formatIT(produzione[i])}</td>
+        <td>${produzione[i]}</td>
         <td id="ris${i}"></td>
         <td id="var${i}"></td>
     `;
@@ -182,7 +176,7 @@ for (let i = 0; i < 63; i++) {
 }
 
 // -----------------------------
-// CARICA MATRICE
+// CARICA MATRICE (punto decimale)
 // -----------------------------
 window.addEventListener("DOMContentLoaded", function() {
 
@@ -196,7 +190,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 riga
                     .trim()
                     .split(/\t+/)
-                    .map(v => parseFloat(v))   // ← LETTURA DIRETTA SENZA TRASFORMAZIONI
+                    .map(v => parseFloat(v))   // nel txt ora c'è il punto, quindi basta così
             );
 
             for (let i = 0; i < 63; i++) {
@@ -227,7 +221,8 @@ function calcola() {
         const pol = parseFloat(document.getElementById("policy"+i).value);
         const val = domandaFinale[i] + (isNaN(pol) ? 0 : pol);
         nuova.push(val);
-        document.getElementById("nuova"+i).textContent = formatIT(val);
+        // niente formatIT: valore grezzo
+        document.getElementById("nuova"+i).textContent = val;
     }
 
     const risultato = new Array(63).fill(0);
@@ -237,7 +232,8 @@ function calcola() {
             somma += M[i][j] * nuova[j];
         }
         risultato[i] = somma;
-        document.getElementById("ris"+i).textContent = formatIT(somma);
+        // niente formatIT: valore grezzo
+        document.getElementById("ris"+i).textContent = somma;
     }
 
     for (let i = 0; i < 63; i++) {
@@ -251,6 +247,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
