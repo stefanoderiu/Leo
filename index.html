@@ -217,11 +217,12 @@ function calcola() {
 
     const risultato = new Array(63).fill(0);
     for (let i = 0; i < 63; i++) {
-        let somma = 0;
-        for (let j = 0; j < 63; j++) {
-            somma += M[i][j] * nuova[j];
-        }
-        risultato[i] = somma;
+    let somma = 0;
+    for (let j = 0; j < 63; j++) {
+        somma += M[j][i] * nuova[j];   // NOTA: M[j][i], non M[i][j]
+    }
+    risultato[i] = somma;
+}
         document.getElementById("ris"+i).textContent = format4(somma);
     }
 
