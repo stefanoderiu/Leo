@@ -48,11 +48,18 @@ function formatIT(num) {
         .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-// Percentuale con DUE decimali
+// Percentuale con DUE decimali e virgola
 function formatPerc(num) {
-    return Number(num)
-        .toFixed(2)   // due decimali
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "%";
+    let n = Number(num);
+    let sign = n < 0 ? "-" : "";
+    n = Math.abs(n);
+
+    let intera = Math.floor(n).toString();
+    let decimali = (n % 1).toFixed(2).substring(2); // due decimali
+
+    intera = intera.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    return sign + intera + "," + decimali + "%";
 }
 
 // -----------------------------
@@ -247,6 +254,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
