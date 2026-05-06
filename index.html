@@ -2,52 +2,134 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Calcolo economico 63×6</title>
+<title>Leontief Model</title>
+
+<!-- XLSX -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
-    th, td { border: 1px solid #ccc; padding: 4px; text-align: right; }
-    th:first-child, td:first-child { text-align: left; font-weight: bold; }
-    th { background: #eee; }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+        text-align: center;
+    }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: right; }
+    th:first-child, td:first-child { text-align: left; }
+    th { background: #f2f2f2; }
+
     input { width: 80px; text-align: right; }
+
+    button {
+        background: #0078ff;
+        color: white;
+        border: none;
+        padding: 12px 28px;
+        font-size: 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #005fcc;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.20);
+    }
+
+    button:active {
+        background: #004fa8;
+        transform: translateY(0px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    }
+
+    .titolo { text-align: center; }
+
+    .linea-tabella {
+        width: 100%;
+        height: 2px;
+        background: #0078ff;
+        margin: 15px 0 20px 0;
+        border-radius: 2px;
+    }
+
+    #tabella thead th { text-align: center; }
+
+    /* contenitore grafico con altezza fissa */
+    #grafico-container {
+        margin-top: 40px;
+        width: 100%;
+        height: 1000px;      /* ~5 cm */
+    }
+
+    #grafico {
+        width: 100% !important;
+        height: 100% !important;
+    }
 </style>
 </head>
 
 <body>
 
-<h2>Calcolo economico 63×6</h2>
-<p id="status">Caricamento matrice in corso…</p>
+<h2 class="titolo">Modello di Leontief calibrato sulla tavola Input-Output prodotto x prodotto dell'Italia per il 2022</h2>
+<h3 class="titolo">Realizzato da Stefano Deriu</h3>
 
-<button onclick="calcola()">Calcola</button>
+<div class="linea-tabella"></div>
+
+<p id="status">Caricamento dell'inversa di Leontief in corso…</p>
+
+<button onclick="calcola()">CALCOLA</button>
 
 <table id="tabella">
     <thead>
         <tr>
-            <th>Settore</th>
+            <th>Prodotto</th>
             <th>Domanda finale</th>
             <th>Policy</th>
             <th>Nuova domanda finale</th>
-            <th>Produzione (modello, inserita)</th>
-            <th>Risultato (M × col.3)</th>
+            <th>Produzione pre</th>
+            <th>Produzione post</th>
             <th>Variazione %</th>
         </tr>
     </thead>
     <tbody></tbody>
 </table>
 
+<!-- CONTENITORE GRAFICO A ALTEZZA FISSA -->
+<div id="grafico-container">
+    <canvas id="grafico"></canvas>
+</div>
+
 <script>
 let M = null;
+let chart = null;
 
 // -----------------------------
 // FORMATI
 // -----------------------------
-function format4(num) {
-    return Number(num).toFixed(4);
+function formatInt(num) {
+    return Number(num).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
 }
 
-function formatPerc(num) {
-    return Number(num).toFixed(4) + "%";
+function formatPerc1(num) {
+    let x = Number(num);
+    if (Math.abs(x) < 0.05) x = 0;
+    return x.toLocaleString("en-US", {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    }) + "%";
 }
 
 // -----------------------------
@@ -55,72 +137,72 @@ function formatPerc(num) {
 // -----------------------------
 const settori = [
 "Prodotti dell’agricoltura e della caccia e relativi servizi",
-"Prodotti della silvicoltura, delle operazioni di taglio e trasporto dei tronchi e servizi connessi",
-"Pesci ed altri prodotti della pesca; prodotti dell’acquacoltura; servizi di supporto per la pesca",
-"Prodotti delle miniere e delle cave",
-"Prodotti alimentari, bevande e prodotti a base di tabacco",
-"Prodotti tessili; articoli di abbigliamento; cuoio e relativi prodotti",
-"Legno e prodotti in legno e sughero (esclusi i mobili); articoli di paglia e materiali da intreccio",
+"Prodotti della silvicoltura",
+"Pesca e acquacoltura",
+"Estrazione di minerali",
+"Prodotti alimentari, bevande e tabacco",
+"Prodotti tessili e abbigliamento",
+"Legno e prodotti in legno",
 "Carta e prodotti di carta",
-"Servizi di stampa e di registrazione",
-"Coke e prodotti petroliferi raffinati",
+"Stampa e servizi connessi",
+"Coke e prodotti petroliferi",
 "Prodotti chimici",
-"Prodotti farmaceutici di base e preparati farmaceutici",
-"Articoli in gomma e in materie plastiche",
-"Altri prodotti della lavorazione di minerali non metalliferi",
+"Prodotti farmaceutici",
+"Articoli in gomma e plastica",
+"Minerali non metalliferi",
 "Metalli",
-"Prodotti in metallo, esclusi macchine e impianti",
-"Prodotti informatici, elettronici ed ottici",
+"Prodotti in metallo",
+"Computer e prodotti elettronici",
 "Apparecchiature elettriche",
-"Macchine ed apparecchi meccanici n.c.a.",
-"Autoveicoli, rimorchi e semirimorchi",
+"Macchinari",
+"Autoveicoli",
 "Altri mezzi di trasporto",
-"Mobilio; altri manufatti",
-"Servizi di riparazione e installazione di macchinari e apparecchi",
-"Energia elettrica, gas, vapore e aria condizionata",
-"Acqua naturale; servizi di trattamento delle acque e di produzione e distribuzione d’acqua",
-"Servizi di smaltimento delle acque di scarico; fanghi di depurazione; raccolta e smaltimento rifiuti; recupero materiali; decontaminazione",
-"Lavori di costruzione ed opere di edilizia civile",
-"Servizi di vendita all’ingrosso e al dettaglio e di riparazione di autoveicoli e motocicli",
-"Servizi di vendita all’ingrosso, escluso quello di autoveicoli e motocicli",
-"Servizi di vendita al dettaglio, escluso quello di autoveicoli e motocicli",
-"Servizi di trasporto terrestre e di trasporto mediante condotte",
-"Servizi di trasporto marittimo e per vie d’acqua",
-"Servizi di trasporto aereo",
-"Servizi di magazzinaggio e di supporto per i trasporti",
-"Servizi postali e di corriere",
-"Servizi di alloggio e di ristorazione",
-"Servizi di editoria",
-"Servizi di produzione cinematografica, video, TV, registrazioni sonore e musicali; programmazione ed emissione radiotelevisiva",
-"Servizi di telecomunicazione",
-"Programmazione informatica, consulenze e servizi connessi; servizi d’informazione",
-"Servizi finanziari (escluse le assicurazioni e i fondi pensione)",
-"Servizi connessi alle assicurazioni, riassicurazioni e fondi pensione",
-"Servizi ausiliari dei servizi finanziari e assicurativi",
-"Servizi immobiliari",
-"Servizi legali e contabilità; sedi sociali; consulenza gestionale",
-"Servizi di architettura e ingegneria; sperimentazione e analisi tecnica",
-"Servizi di ricerca e sviluppo scientifici",
-"Servizi di pubblicità e studi di mercato",
-"Altri servizi professionali, scientifici e tecnici; servizi veterinari",
-"Servizi di locazione e leasing",
+"Mobilio",
+"Riparazioni e installazioni",
+"Energia elettrica e gas",
+"Acqua e rifiuti",
+"Trattamento acque reflue",
+"Costruzioni",
+"Commercio e riparazioni",
+"Commercio all’ingrosso",
+"Commercio al dettaglio",
+"Trasporto terrestre",
+"Trasporto marittimo",
+"Trasporto aereo",
+"Magazzinaggio",
+"Servizi postali",
+"Alloggio e ristorazione",
+"Editoria",
+"Produzione cinematografica",
+"Telecomunicazioni",
+"Informatica",
+"Servizi finanziari",
+"Assicurazioni",
+"Servizi ausiliari finanziari",
+"Immobiliare",
+"Servizi legali e contabilità",
+"Architettura e ingegneria",
+"Ricerca e sviluppo",
+"Pubblicità e marketing",
+"Servizi professionali",
+"Locazione e leasing",
 "Servizi del lavoro",
-"Agenzie di viaggio, tour operator, prenotazioni e servizi connessi",
-"Servizi investigativi e di vigilanza; manutenzione edifici e paesaggio; servizi amministrativi e di supporto",
-"Pubblica amministrazione e difesa; assicurazione sociale obbligatoria",
+"Agenzie di viaggio",
+"Servizi di vigilanza e pulizia",
+"Pubblica amministrazione",
 "Istruzione",
-"Servizi sanitari",
-"Servizi di assistenza residenziale e non residenziale",
-"Servizi creativi, artistici, intrattenimento; biblioteche, archivi, musei; gioco d’azzardo",
-"Servizi sportivi e di intrattenimento e divertimento",
-"Servizi forniti da organizzazioni associative",
-"Riparazione di elaboratori elettronici e beni per uso personale e domestico",
+"Sanità",
+"Assistenza sociale",
+"Servizi culturali",
+"Sport e intrattenimento",
+"Organizzazioni associative",
+"Riparazione beni personali",
 "Altri servizi personali",
-"Servizi delle famiglie come datori di lavoro; produzione per uso proprio"
+"Servizi delle famiglie"
 ];
 
 // -----------------------------
-// DOMANDA FINALE (decimali con punto)
+// DOMANDA FINALE
 // -----------------------------
 const domandaFinale = [
 9369.73919,3168.43965,797.16107,-85327.54932,92937.22788,53170.20242,
@@ -137,7 +219,7 @@ const domandaFinale = [
 ];
 
 // -----------------------------
-// PRODUZIONE (modello, inserita a mano)
+// PRODUZIONE
 // -----------------------------
 const produzione = [
 66367.0084,3865.69353,1473.46688,8561.82371,184307.919,97610.30622,
@@ -160,50 +242,93 @@ const tbody = document.querySelector("#tabella tbody");
 
 for (let i = 0; i < 63; i++) {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
         <td>${settori[i]}</td>
-        <td>${format4(domandaFinale[i])}</td>
+        <td>${formatInt(domandaFinale[i])}</td>
         <td><input id="policy${i}" type="number" step="0.0001" value="0"></td>
         <td id="nuova${i}"></td>
-        <td>${format4(produzione[i])}</td>
+        <td>${formatInt(produzione[i])}</td>
         <td id="ris${i}"></td>
         <td id="var${i}"></td>
     `;
-
     tbody.appendChild(tr);
 }
 
 // -----------------------------
-// CARICA MATRICE
+// CARICA AUTOMATICAMENTE ita_2022.xlsx
 // -----------------------------
 window.addEventListener("DOMContentLoaded", function() {
 
-    fetch("ita_2022.txt")
-        .then(r => r.text())
-        .then(text => {
+    fetch("ita_2022.xlsx")
+        .then(r => r.arrayBuffer())
+        .then(buffer => {
 
-            const righe = text.trim().split(/\r?\n/);
+            const workbook = XLSX.read(buffer, { type: "array" });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-            M = righe.map(riga =>
-                riga
-                    .trim()
-                    .split(/\t+/)
-                    .map(v => parseFloat(v))
+            M = rows.map(riga =>
+                riga.map(v =>
+                    typeof v === "string"
+                        ? parseFloat(v.replace(",", "."))
+                        : Number(v)
+                )
             );
 
             document.getElementById("status").textContent =
-                "Matrice 63×63 caricata automaticamente ✔";
+                "Matrice inversa di Leontief caricata automaticamente ✔";
         })
-        .catch(err => alert("Errore nel caricamento della matrice"));
+        .catch(err => {
+            document.getElementById("status").textContent =
+                "Errore: impossibile caricare ita_2022.xlsx";
+        });
 });
 
 // -----------------------------
-// CALCOLO COMPLETO
+// GRAFICO
+// -----------------------------
+function aggiornaGrafico(variazioni) {
+    const ctx = document.getElementById("grafico").getContext("2d");
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: settori,
+            datasets: [{
+                label: "Variazione % della produzione",
+                data: variazioni,
+                backgroundColor: variazioni.map(v => v >= 0 ? "rgba(0,120,255,0.6)" : "rgba(255,80,80,0.6)"),
+                borderColor: variazioni.map(v => v >= 0 ? "rgba(0,120,255,1)" : "rgba(255,80,80,1)"),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,   // rispetta l'altezza del contenitore
+            scales: {
+                x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 60 } },
+                y: { title: { display: true, text: "Variazione %" } }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.raw.toFixed(1) + "%"
+                    }
+                }
+            }
+        }
+    });
+}
+
+// -----------------------------
+// CALCOLO
 // -----------------------------
 function calcola() {
     if (!M) {
-        alert("La matrice non è stata caricata.");
+        alert("La matrice inversa non è stata caricata.");
         return;
     }
 
@@ -212,7 +337,7 @@ function calcola() {
         const pol = parseFloat(document.getElementById("policy"+i).value);
         const val = domandaFinale[i] + (isNaN(pol) ? 0 : pol);
         nuova.push(val);
-        document.getElementById("nuova"+i).textContent = format4(val);
+        document.getElementById("nuova"+i).textContent = formatInt(val);
     }
 
     const risultato = new Array(63).fill(0);
@@ -222,20 +347,31 @@ function calcola() {
             somma += M[i][j] * nuova[j];
         }
         risultato[i] = somma;
-        document.getElementById("ris"+i).textContent = format4(somma);
+        document.getElementById("ris"+i).textContent = formatInt(somma);
     }
+
+    const variazioni = [];
 
     for (let i = 0; i < 63; i++) {
         const base = produzione[i];
         const nuovo = risultato[i];
         const perc = ((nuovo - base) / base) * 100;
-        document.getElementById("var"+i).textContent = formatPerc(perc);
+        variazioni.push(perc);
+        document.getElementById("var"+i).textContent = formatPerc1(perc);
     }
+
+    aggiornaGrafico(variazioni);
 }
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
 
 
 
