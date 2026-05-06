@@ -274,11 +274,11 @@ window.addEventListener("DOMContentLoaded", function() {
             );
 
             document.getElementById("status").textContent =
-                "Matrice inversa di Leontief caricata automaticamente ✔";
+                "Matrice inversa di Leontief caricata correttamente ✔";
         })
         .catch(err => {
             document.getElementById("status").textContent =
-                "Errore: impossibile caricare ita_2022.xlsx";
+                "Errore: Impossibile caricare la matrice inversa di Leontief";
         });
 });
 
@@ -326,7 +326,7 @@ function aggiornaGrafico(variazioni) {
 // -----------------------------
 function calcola() {
     if (!M) {
-        alert("La matrice inversa non è stata caricata.");
+        alert("La matrice inversa di Leontief non è stata caricata.");
         return;
     }
 
