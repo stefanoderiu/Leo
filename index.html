@@ -196,7 +196,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 riga
                     .trim()
                     .split(/\t+/)
-                    .map(v => parseFloat(v))   // ← ORA BASTA QUESTO
+                    .map(v => parseFloat(v))   // ← LETTURA DIRETTA SENZA TRASFORMAZIONI
             );
 
             for (let i = 0; i < 63; i++) {
@@ -206,7 +206,6 @@ window.addEventListener("DOMContentLoaded", function() {
                     return;
                 }
             }
-
 
             document.getElementById("status").textContent =
                 "Matrice 63×63 caricata automaticamente ✔";
@@ -252,6 +251,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
