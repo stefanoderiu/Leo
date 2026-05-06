@@ -160,20 +160,33 @@ for (let i = 0; i < 63; i++) {
 }
 
 // -----------------------------
-// CARICA AUTOMATICAMENTE LA MATRICE (con conversione virgola → punto)
+// CARICA MATRICE (fix NaN definitivo)
 // -----------------------------
 window.addEventListener("DOMContentLoaded", function() {
 
     fetch("ita_2022.txt")
         .then(r => r.text())
         .then(text => {
+
             const righe = text.trim().split(/\r?\n/);
 
-            M = righe.map(r =>
-                r.split(/\s+|\t+/).map(v =>
-                    parseFloat(v.replace(",", "."))
-                )
+            M = righe.map(riga =>
+                riga
+                    .trim()
+                    .split(/\t+/)                 // separa per TAB
+                    .map(v => v.trim())           // rimuove spazi
+                    .filter(v => v !== "")        // elimina celle vuote
+                    .map(v => parseFloat(v.replace(",", "."))) // virgola → punto
             );
+
+            // Controllo righe
+            for (let i = 0; i < 63; i++) {
+                if (M[i].length !== 63 || M[i].some(isNaN)) {
+                    console.error("Errore riga", i+1, M[i]);
+                    alert("Errore nella matrice: riga " + (i+1) + " contiene valori non numerici.");
+                    return;
+                }
+            }
 
             document.getElementById("status").textContent =
                 "Matrice 63×63 caricata automaticamente ✔";
@@ -222,6 +235,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
