@@ -40,7 +40,7 @@
 let M = null;
 
 // -----------------------------
-// 63 SETTORI (colonna 0)
+// 63 SETTORI
 // -----------------------------
 const settori = [
 "Prodotti dell’agricoltura e della caccia e relativi servizi",
@@ -160,7 +160,7 @@ for (let i = 0; i < 63; i++) {
 }
 
 // -----------------------------
-// CARICA AUTOMATICAMENTE LA MATRICE
+// CARICA AUTOMATICAMENTE LA MATRICE (con conversione virgola → punto)
 // -----------------------------
 window.addEventListener("DOMContentLoaded", function() {
 
@@ -168,7 +168,13 @@ window.addEventListener("DOMContentLoaded", function() {
         .then(r => r.text())
         .then(text => {
             const righe = text.trim().split(/\r?\n/);
-            M = righe.map(r => r.split(/\s+|\t+/).map(Number));
+
+            M = righe.map(r =>
+                r.split(/\s+|\t+/).map(v =>
+                    parseFloat(v.replace(",", "."))
+                )
+            );
+
             document.getElementById("status").textContent =
                 "Matrice 63×63 caricata automaticamente ✔";
         })
@@ -200,7 +206,6 @@ function calcola() {
         for (let j = 0; j < 63; j++) {
             somma += M[i][j] * nuova[j];
         }
-
         risultato[i] = somma;
         document.getElementById("ris"+i).textContent = somma.toFixed(3);
     }
@@ -217,6 +222,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
