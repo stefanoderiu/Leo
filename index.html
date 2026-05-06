@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Tabella 63×6 con moltiplicazione matrice</title>
+<title>Calcolo economico 63×6</title>
 
 <style>
     body { font-family: Arial, sans-serif; padding: 20px; }
@@ -40,19 +40,14 @@
 let M = null;
 
 // -----------------------------
-// SOLO FORMATO PERCENTUALE
+// NESSUNA FORMATTAZIONE
 // -----------------------------
+function formatNum(x) {
+    return x;   // restituisce il numero così com'è
+}
+
 function formatPerc(num) {
-    let n = Number(num);
-    let sign = n < 0 ? "-" : "";
-    n = Math.abs(n);
-
-    let intera = Math.floor(n).toString();
-    let decimali = (n % 1).toFixed(2).substring(2);
-
-    intera = intera.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-    return sign + intera + "," + decimali + "%";
+    return num.toFixed(4) + "%";
 }
 
 // -----------------------------
@@ -125,7 +120,7 @@ const settori = [
 ];
 
 // -----------------------------
-// DOMANDA FINALE (valori grezzi)
+// DOMANDA FINALE
 // -----------------------------
 const domandaFinale = [
 9370,3168,797,-85328,92937,53170,-1515,4186,652,39113,
@@ -138,7 +133,7 @@ const domandaFinale = [
 ];
 
 // -----------------------------
-// PRODUZIONE (valori grezzi)
+// PRODUZIONE
 // -----------------------------
 const produzione = [
 66367.0084,3865.69353,1473.46688,8561.82371,184307.919,97610.30622,
@@ -155,7 +150,7 @@ const produzione = [
 ];
 
 // -----------------------------
-// CREA LA TABELLA (senza formatIT)
+// CREA LA TABELLA
 // -----------------------------
 const tbody = document.querySelector("#tabella tbody");
 
@@ -176,7 +171,7 @@ for (let i = 0; i < 63; i++) {
 }
 
 // -----------------------------
-// CARICA MATRICE (punto decimale)
+// CARICA MATRICE
 // -----------------------------
 window.addEventListener("DOMContentLoaded", function() {
 
@@ -190,16 +185,8 @@ window.addEventListener("DOMContentLoaded", function() {
                 riga
                     .trim()
                     .split(/\t+/)
-                    .map(v => parseFloat(v))   // nel txt ora c'è il punto, quindi basta così
+                    .map(v => parseFloat(v))
             );
-
-            for (let i = 0; i < 63; i++) {
-                if (M[i].length !== 63 || M[i].some(isNaN)) {
-                    console.error("Errore riga", i+1, M[i]);
-                    alert("Errore nella matrice: riga " + (i+1) + " contiene valori non numerici.");
-                    return;
-                }
-            }
 
             document.getElementById("status").textContent =
                 "Matrice 63×63 caricata automaticamente ✔";
@@ -221,7 +208,6 @@ function calcola() {
         const pol = parseFloat(document.getElementById("policy"+i).value);
         const val = domandaFinale[i] + (isNaN(pol) ? 0 : pol);
         nuova.push(val);
-        // niente formatIT: valore grezzo
         document.getElementById("nuova"+i).textContent = val;
     }
 
@@ -232,7 +218,6 @@ function calcola() {
             somma += M[i][j] * nuova[j];
         }
         risultato[i] = somma;
-        // niente formatIT: valore grezzo
         document.getElementById("ris"+i).textContent = somma;
     }
 
@@ -247,6 +232,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
