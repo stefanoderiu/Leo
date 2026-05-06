@@ -28,7 +28,7 @@
             <th>Domanda finale</th>
             <th>Policy</th>
             <th>Nuova domanda finale</th>
-            <th>Produzione</th>
+            <th>Produzione (modello, inserita)</th>
             <th>Risultato (M × col.3)</th>
             <th>Variazione %</th>
         </tr>
@@ -40,10 +40,14 @@
 let M = null;
 
 // -----------------------------
-// SOLO FORMATO PERCENTUALE
+// FORMATI
 // -----------------------------
+function format4(num) {
+    return Number(num).toFixed(4);
+}
+
 function formatPerc(num) {
-    return num.toFixed(4) + "%";
+    return Number(num).toFixed(4) + "%";
 }
 
 // -----------------------------
@@ -116,7 +120,7 @@ const settori = [
 ];
 
 // -----------------------------
-// DOMANDA FINALE (con virgole)
+// DOMANDA FINALE (decimali con punto)
 // -----------------------------
 const domandaFinale = [
 9369.73919,3168.43965,797.16107,-85327.54932,92937.22788,53170.20242,
@@ -133,7 +137,7 @@ const domandaFinale = [
 ];
 
 // -----------------------------
-// PRODUZIONE (rimane identica)
+// PRODUZIONE (modello, inserita a mano)
 // -----------------------------
 const produzione = [
 66367.0084,3865.69353,1473.46688,8561.82371,184307.919,97610.30622,
@@ -159,10 +163,10 @@ for (let i = 0; i < 63; i++) {
 
     tr.innerHTML = `
         <td>${settori[i]}</td>
-        <td>${domandaFinale[i]}</td>
+        <td>${format4(domandaFinale[i])}</td>
         <td><input id="policy${i}" type="number" step="0.0001" value="0"></td>
         <td id="nuova${i}"></td>
-        <td>${produzione[i]}</td>
+        <td>${format4(produzione[i])}</td>
         <td id="ris${i}"></td>
         <td id="var${i}"></td>
     `;
@@ -208,7 +212,7 @@ function calcola() {
         const pol = parseFloat(document.getElementById("policy"+i).value);
         const val = domandaFinale[i] + (isNaN(pol) ? 0 : pol);
         nuova.push(val);
-        document.getElementById("nuova"+i).textContent = val;
+        document.getElementById("nuova"+i).textContent = format4(val);
     }
 
     const risultato = new Array(63).fill(0);
@@ -218,7 +222,7 @@ function calcola() {
             somma += M[i][j] * nuova[j];
         }
         risultato[i] = somma;
-        document.getElementById("ris"+i).textContent = somma;
+        document.getElementById("ris"+i).textContent = format4(somma);
     }
 
     for (let i = 0; i < 63; i++) {
@@ -232,6 +236,7 @@ function calcola() {
 
 </body>
 </html>
+
 
 
 
