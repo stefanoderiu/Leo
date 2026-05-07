@@ -2,393 +2,263 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Leontief Model</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- XLSX -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Modelli Input-Output Italia</title>
 
 <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
 
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 20px;
-        text-align: center;
-    }
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: right; }
-    th:first-child, td:first-child { text-align: left; }
-    th { background: #f2f2f2; }
-
-    input { width: 80px; text-align: right; }
-
-    button {
-        background: #0078ff;
-        color: white;
-        border: none;
-        padding: 12px 28px;
-        font-size: 16px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        transition: all 0.2s ease-in-out;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-        margin-top: 10px;
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
     }
 
-    button:hover {
-        background: #005fcc;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0,0,0,0.20);
+    body{
+        font-family: Arial, sans-serif;
+        min-height:100vh;
+
+        display:flex;
+        justify-content:center;
+        align-items:center;
+
+        background:
+            linear-gradient(135deg,#0f172a 0%, #1e3a8a 45%, #2563eb 100%);
+
+        overflow:hidden;
     }
 
-    button:active {
-        background: #004fa8;
-        transform: translateY(0px);
-        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    /* sfondo decorativo */
+    body::before{
+        content:"";
+        position:absolute;
+        width:700px;
+        height:700px;
+        border-radius:50%;
+        background:rgba(255,255,255,0.05);
+        top:-250px;
+        right:-200px;
+        filter: blur(10px);
     }
 
-    .titolo { text-align: center; }
-
-    .linea-tabella {
-        width: 100%;
-        height: 2px;
-        background: #0078ff;
-        margin: 15px 0 20px 0;
-        border-radius: 2px;
+    body::after{
+        content:"";
+        position:absolute;
+        width:500px;
+        height:500px;
+        border-radius:50%;
+        background:rgba(255,255,255,0.04);
+        bottom:-180px;
+        left:-120px;
+        filter: blur(8px);
     }
 
-    #tabella thead th { text-align: center; }
+    .container{
 
-    /* contenitore grafico con altezza fissa */
-    #grafico-container {
-        margin-top: 40px;
-        width: 100%;
-        height: 1000px;      /* ~5 cm */
+        position:relative;
+        z-index:2;
+
+        width:90%;
+        max-width:700px;
+
+        background:rgba(255,255,255,0.10);
+
+        backdrop-filter: blur(12px);
+
+        border:1px solid rgba(255,255,255,0.15);
+
+        border-radius:28px;
+
+        padding:60px 50px;
+
+        text-align:center;
+
+        box-shadow:
+            0 15px 40px rgba(0,0,0,0.30);
     }
 
-    #grafico {
-        width: 100% !important;
-        height: 100% !important;
+    h1{
+        color:white;
+        font-size:38px;
+        margin-bottom:18px;
+        font-weight:700;
+        letter-spacing:0.5px;
     }
+
+    .subtitle{
+        color:rgba(255,255,255,0.85);
+        font-size:18px;
+        line-height:1.6;
+        margin-bottom:55px;
+    }
+
+    .buttons{
+        display:flex;
+        gap:30px;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .btn{
+
+        text-decoration:none;
+
+        min-width:260px;
+
+        padding:22px 28px;
+
+        border-radius:18px;
+
+        font-size:22px;
+        font-weight:700;
+
+        transition:all 0.25s ease;
+
+        position:relative;
+
+        overflow:hidden;
+    }
+
+    .btn::before{
+
+        content:"";
+
+        position:absolute;
+
+        top:0;
+        left:-100%;
+
+        width:100%;
+        height:100%;
+
+        background:rgba(255,255,255,0.15);
+
+        transition:left 0.4s ease;
+    }
+
+    .btn:hover::before{
+        left:100%;
+    }
+
+    .btn-pxp,
+.btn-bxb{
+
+    background:white;
+    color:#0f172a;
+
+    box-shadow:
+        0 10px 25px rgba(255,255,255,0.20);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease,
+        color 0.25s ease;
+}
+
+.btn-pxp:hover{
+
+    transform:translateY(-4px) scale(1.02);
+
+    background:#2563eb;
+    color:white;
+
+    box-shadow:
+        0 18px 35px rgba(37,99,235,0.40);
+}
+
+.btn-bxb:hover{
+
+    transform:translateY(-4px) scale(1.02);
+
+    background:#0f172a;
+    color:white;
+
+    box-shadow:
+        0 18px 35px rgba(15,23,42,0.45);
+}
+
+    .footer{
+        margin-top:45px;
+        color:rgba(255,255,255,0.65);
+        font-size:14px;
+        letter-spacing:0.3px;
+    }
+
+    @media(max-width:700px){
+
+        h1{
+            font-size:32px;
+        }
+
+        .subtitle{
+            font-size:16px;
+        }
+
+        .btn{
+            width:100%;
+            min-width:auto;
+        }
+
+        .container{
+            padding:45px 28px;
+        }
+    }
+	
+.footer-link{
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    transition:all 0.2s ease;
+}
+
+.footer-link:hover{
+    color:#93c5fd;
+    text-shadow:0 0 8px rgba(147,197,253,0.7);
+}
+
 </style>
 </head>
 
 <body>
 
-<h2 class="titolo">Modello di Leontief calibrato sulla tavola Input-Output prodotto x prodotto dell'Italia per il 2022</h2>
-<div class="linea-tabella"></div>
+<div class="container">
 
-<p id="status">Caricamento dell'inversa di Leontief in corso…</p>
+    <h1>
+        Modelli Input-Output Italia 2022
+    </h1>
 
-<button onclick="calcola()">CALCOLA</button>
+    <div class="subtitle">
+        Seleziona il modello economico da analizzare
+    </div>
 
-<table id="tabella">
-    <thead>
-        <tr>
-            <th>Prodotto</th>
-            <th>Domanda finale</th>
-            <th>Policy</th>
-            <th>Nuova domanda finale</th>
-            <th>Produzione pre</th>
-            <th>Produzione post</th>
-            <th>Variazione %</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
-</table>
+    <div class="buttons">
 
-<!-- CONTENITORE GRAFICO A ALTEZZA FISSA -->
-<div id="grafico-container">
-    <canvas id="grafico"></canvas>
+        <a class="btn btn-pxp" href="ita_pxp.html">
+            Prodotto × Prodotto
+        </a>
+
+        <a class="btn btn-bxb" href="">
+            Branca × Branca
+        </a>
+
+    </div>
+
+    <div class="footer">
+    <br><br>
+
+    Realizzato da
+
+    <a
+        href="https://docenti.unimc.it/s.deriu"
+        target="_blank"
+        class="footer-link"
+    >
+        Stefano Deriu
+    </a>
 </div>
 
-<script>
-let M = null;
-let chart = null;
-
-// -----------------------------
-// FORMATI
-// -----------------------------
-function formatInt(num) {
-    return Number(num).toLocaleString("en-US", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    });
-}
-
-function formatPerc1(num) {
-    let x = Number(num);
-    if (Math.abs(x) < 0.05) x = 0;
-    return x.toLocaleString("en-US", {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1
-    }) + "%";
-}
-
-// -----------------------------
-// 63 SETTORI
-// -----------------------------
-const settori = [
-"Prodotti dell’agricoltura e della caccia e relativi servizi",
-"Prodotti della silvicoltura",
-"Pesca e acquacoltura",
-"Estrazione di minerali",
-"Prodotti alimentari, bevande e tabacco",
-"Prodotti tessili e abbigliamento",
-"Legno e prodotti in legno",
-"Carta e prodotti di carta",
-"Stampa e servizi connessi",
-"Coke e prodotti petroliferi",
-"Prodotti chimici",
-"Prodotti farmaceutici",
-"Articoli in gomma e plastica",
-"Minerali non metalliferi",
-"Metalli",
-"Prodotti in metallo",
-"Computer e prodotti elettronici",
-"Apparecchiature elettriche",
-"Macchinari",
-"Autoveicoli",
-"Altri mezzi di trasporto",
-"Mobilio",
-"Riparazioni e installazioni",
-"Energia elettrica e gas",
-"Acqua e rifiuti",
-"Trattamento acque reflue",
-"Costruzioni",
-"Commercio e riparazioni",
-"Commercio all’ingrosso",
-"Commercio al dettaglio",
-"Trasporto terrestre",
-"Trasporto marittimo",
-"Trasporto aereo",
-"Magazzinaggio",
-"Servizi postali",
-"Alloggio e ristorazione",
-"Editoria",
-"Produzione cinematografica",
-"Telecomunicazioni",
-"Informatica",
-"Servizi finanziari",
-"Assicurazioni",
-"Servizi ausiliari finanziari",
-"Immobiliare",
-"Servizi legali e contabilità",
-"Architettura e ingegneria",
-"Ricerca e sviluppo",
-"Pubblicità e marketing",
-"Servizi professionali",
-"Locazione e leasing",
-"Servizi del lavoro",
-"Agenzie di viaggio",
-"Servizi di vigilanza e pulizia",
-"Pubblica amministrazione",
-"Istruzione",
-"Sanità",
-"Assistenza sociale",
-"Servizi culturali",
-"Sport e intrattenimento",
-"Organizzazioni associative",
-"Riparazione beni personali",
-"Altri servizi personali",
-"Servizi delle famiglie"
-];
-
-// -----------------------------
-// DOMANDA FINALE
-// -----------------------------
-const domandaFinale = [
-9369.73919,3168.43965,797.16107,-85327.54932,92937.22788,53170.20242,
--1514.65976,4185.65205,651.76631,39112.58768,-5240.17164,3312.2498,
-13071.44979,9375.41434,-11550.72854,27094.50881,6240.9603,14485.03798,
-90359.76806,33462.83751,23591.9136,38644.90375,17190.72034,16575.30673,
-5761.81811,7714.94898,198872.0666,31383.88851,93830.96746,138164.0058,
-25993.96119,7333.20416,1528.34536,19723.47635,694.63489,101540.2941,
-7437.24422,6124.71914,8958.10599,28318.49269,11940.49779,26432.40947,
-1556.71359,208428.9226,8420.13856,1040.6381,38514.0344,-1685.56581,
-1780.92135,-487.25817,491.44644,4376.36437,8811.104,131275.3563,
-81915.97355,146936.5338,14916.62886,17574.75286,7191.48312,3629.45162,
-2248.95058,25719.44986,16180.39077
-];
-
-// -----------------------------
-// PRODUZIONE
-// -----------------------------
-const produzione = [
-66367.0084,3865.69353,1473.46688,8561.82371,184307.919,97610.30622,
-15262.08876,35441.83757,11008.12602,84850.34233,73553.80921,25077.23553,
-62791.32198,42905.44759,92959.02369,134338.7907,29059.60696,48392.52207,
-140054.3638,60201.89664,31332.71388,63248.34621,34091.2615,136945.5505,
-8859.49552,59881.32821,297226.0068,45027.26939,197527.2561,154109.9339,
-106534.481,10987.91341,3597.71993,102567.3914,5787.42329,143570.351,
-12246.61791,13998.74919,34816.18952,82293.02111,71725.50641,38488.09541,
-37869.32766,270792.5128,113460.6417,49609.40238,44640.69166,24268.61153,
-31116.56859,47626.96032,17130.34028,12659.65704,74378.7704,136330,
-93490.50073,162481.6188,24842.03358,34595.00605,19049.25312,6037.86772,
-4849.85438,29735.7679,16180.39077
-];
-
-// -----------------------------
-// CREA LA TABELLA
-// -----------------------------
-const tbody = document.querySelector("#tabella tbody");
-
-for (let i = 0; i < 63; i++) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-        <td>${settori[i]}</td>
-        <td>${formatInt(domandaFinale[i])}</td>
-        <td><input id="policy${i}" type="number" step="0.0001" value="0"></td>
-        <td id="nuova${i}"></td>
-        <td>${formatInt(produzione[i])}</td>
-        <td id="ris${i}"></td>
-        <td id="var${i}"></td>
-    `;
-    tbody.appendChild(tr);
-}
-
-// -----------------------------
-// CARICA AUTOMATICAMENTE ita_2022.xlsx
-// -----------------------------
-window.addEventListener("DOMContentLoaded", function() {
-
-    fetch("ita_2022.xlsx")
-        .then(r => r.arrayBuffer())
-        .then(buffer => {
-
-            const workbook = XLSX.read(buffer, { type: "array" });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-            M = rows.map(riga =>
-                riga.map(v =>
-                    typeof v === "string"
-                        ? parseFloat(v.replace(",", "."))
-                        : Number(v)
-                )
-            );
-
-            document.getElementById("status").textContent =
-                "Matrice inversa di Leontief caricata correttamente ✔";
-        })
-        .catch(err => {
-            document.getElementById("status").textContent =
-                "Errore: Impossibile caricare la matrice inversa di Leontief";
-        });
-});
-
-// -----------------------------
-// GRAFICO
-// -----------------------------
-function aggiornaGrafico(variazioni) {
-    const ctx = document.getElementById("grafico").getContext("2d");
-
-    if (chart) chart.destroy();
-
-    chart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: settori,
-            datasets: [{
-                label: "Variazione % della produzione",
-                data: variazioni,
-                backgroundColor: variazioni.map(v => v >= 0 ? "rgba(0,120,255,0.6)" : "rgba(255,80,80,0.6)"),
-                borderColor: variazioni.map(v => v >= 0 ? "rgba(0,120,255,1)" : "rgba(255,80,80,1)"),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,   // rispetta l'altezza del contenitore
-            scales: {
-                x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 60 } },
-                y: { title: { display: true, text: "Variazione %" } }
-            },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => ctx.raw.toFixed(1) + "%"
-                    }
-                }
-            }
-        }
-    });
-}
-
-// -----------------------------
-// CALCOLO
-// -----------------------------
-function calcola() {
-    if (!M) {
-        alert("La matrice inversa di Leontief non è stata caricata.");
-        return;
-    }
-
-    const nuova = [];
-    for (let i = 0; i < 63; i++) {
-        const pol = parseFloat(document.getElementById("policy"+i).value);
-        const val = domandaFinale[i] + (isNaN(pol) ? 0 : pol);
-        nuova.push(val);
-        document.getElementById("nuova"+i).textContent = formatInt(val);
-    }
-
-    const risultato = new Array(63).fill(0);
-    for (let i = 0; i < 63; i++) {
-        let somma = 0;
-        for (let j = 0; j < 63; j++) {
-            somma += M[i][j] * nuova[j];
-        }
-        risultato[i] = somma;
-        document.getElementById("ris"+i).textContent = formatInt(somma);
-    }
-
-    const variazioni = [];
-
-    for (let i = 0; i < 63; i++) {
-    const base = produzione[i];
-    const nuovo = risultato[i];
-
-    // Arrotondamento alla prima cifra decimale
-    const perc = Math.round(((nuovo - base) / base) * 1000) / 10;
-
-    variazioni.push(perc);
-    document.getElementById("var"+i).textContent = formatPerc1(perc);
-}
-
-    aggiornaGrafico(variazioni);
-}
-</script>
+</div>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
