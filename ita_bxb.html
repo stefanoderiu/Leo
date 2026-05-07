@@ -310,7 +310,7 @@ function aggiornaGrafico(v){
         data:{
             labels:settori,
             datasets:[{
-                label:"Variazione rispetto al benchmark",
+                label:"Variazione percentuale rispetto al benchmark",
                 data:v,
                 backgroundColor:v.map(x=>
                     x>=0?"rgba(0,120,255,0.6)":"rgba(255,80,80,0.6)"
@@ -335,7 +335,7 @@ function aggiornaGraficoPesi(v){
         data:{
             labels:settori,
             datasets:[{
-                label:"Contributo alla variazione della produzione",
+                label:"Contributo percentuale alla variazione della produzione",
                 data:v,
                 backgroundColor:"rgba(0,180,0,0.6)"
             }]
