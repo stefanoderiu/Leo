@@ -135,7 +135,7 @@ button:hover {
 <div class="header">
 
 <h2 style="text-align:center">
-Modello di Leontief su tavola Input-Output Branca x Branca - Italia 2022
+Modello di Leontief su tavola Input-Output Branca x Branca - Italia 2022 (Valori in milioni di euro)
 </h2>
 
 <div class="linea-tabella"></div>
@@ -176,7 +176,6 @@ Modello di Leontief su tavola Input-Output Branca x Branca - Italia 2022
 <canvas id="grafico"></canvas>
 </div>
 
-<!-- NUOVO GRAFICO PESI -->
 <div id="grafico-container">
 <canvas id="graficoPesi"></canvas>
 </div>
@@ -202,71 +201,70 @@ function formatPerc(n){
     return (Math.abs(n)<0.05?0:n).toFixed(2) + "%";
 }
 
-/* SETTORI (invariati) */
 const settori = [
-"Produzioni vegetali e animali, caccia e servizi connessi",
-"Silvicoltura e utilizzo di aree forestali",
-"Pesca e acquicoltura",
-"Attività estrattiva",
-"Industrie alimentari, delle bevande e del tabacco",
-"Industrie tessili, confezione di articoli di abbigliamento e di articoli in pelle e simili",
-"Industria del legno e dei prodotti in legno e sughero, esclusi i mobili; fabbricazione di articoli in paglia e materiali da intreccio",
-"Fabbricazione di carta e di prodotti di carta",
-"Stampa e riproduzione su supporti registrati",
-"Fabbricazione di coke e prodotti derivanti dalla raffinazione del petrolio",
-"Fabbricazione di prodotti chimici",
-"Fabbricazione di prodotti farmaceutici di base e di preparati farmaceutici",
-"Fabbricazione di articoli in gomma e materie plastiche",
-"Fabbricazione di altri prodotti della lavorazione di minerali non metalliferi",
-"Attività metallurgiche",
-"Fabbricazione di prodotti in metallo, esclusi macchinari e attrezzature",
-"Fabbricazione di computer e prodotti di elettronica e ottica",
-"Fabbricazione di apparecchiature elettriche",
-"Fabbricazione di macchinari e apparecchiature n.c.a.",
-"Fabbricazione di autoveicoli, rimorchi e semirimorchi",
-"Fabbricazione di altri mezzi di trasporto",
-"Fabbricazione di mobili; altre industrie manifatturiere",
-"Riparazione e installazione di macchine e apparecchiature",
-"Fornitura di energia elettrica, gas, vapore e aria condizionata",
-"Raccolta, trattamento e fornitura di acqua",
-"Gestione delle reti fognarie; attività di raccolta, trattamento e smaltimento dei rifiuti; recupero dei materiali; attività di risanamento e altri servizi di gestione dei rifiuti",
-"Costruzioni",
-"Commercio all’ingrosso e al dettaglio e riparazione di autoveicoli e motocicli",
-"Commercio all’ingrosso, escluso quello di autoveicoli e di motocicli",
-"Commercio al dettaglio, escluso quello di autoveicoli e di motocicli",
-"Trasporto terrestre e trasporto mediante condotte",
-"Trasporti marittimi e per vie d’acqua",
-"Trasporto aereo",
-"Magazzinaggio e attività di supporto ai trasporti",
-"Servizi postali e attività di corriere",
-"Servizi di alloggio; attività di servizi di ristorazione",
-"Attività editoriali",
-"Attività di produzione cinematografica, di video e di programmi televisivi, di registrazioni musicali e sonore; attività di programmazione e trasmissione",
-"Telecomunicazioni",
-"Programmazione, consulenza informatica e attività connesse; attività dei servizi d’informazione",
-"Prestazione di servizi finanziari (ad esclusione di assicurazioni e fondi pensione)",
-"Assicurazioni, riassicurazioni e fondi pensione, escluse le assicurazioni sociali obbligatorie",
-"Attività ausiliarie dei servizi finanziari e delle attività assicurative",
-"Attività immobiliari",
-"Attività legali e contabilità; attività di sedi centrali; consulenza gestionale",
-"Attività degli studi di architettura e d’ingegneria; collaudi e analisi tecniche",
-"Ricerca scientifica e sviluppo",
-"Pubblicità e ricerche di mercato",
-"Altre attività professionali, scientifiche e tecniche; servizi veterinari",
-"Attività di noleggio e leasing",
-"Attività di ricerca, selezione, fornitura di personale",
-"Attività dei servizi delle agenzie di viaggio, dei tour operator e servizi di prenotazione e attività correlate",
-"Servizi di investigazione e vigilanza; attività di servizi per edifici e per paesaggio; attività amministrative e di supporto per le funzioni d’ufficio e altri servizi di supporto alle imprese",
-"Amministrazione pubblica e difesa; assicurazione sociale obbligatoria",
-"Istruzione",
-"Attività dei servizi sanitari",
-"Assistenza sociale",
-"Attività creative, artistiche e d’intrattenimento; attività di biblioteche, archivi, musei e altre attività culturali; attività riguardanti scommesse e case da gioco",
-"Attività sportive, di intrattenimento e di divertimento",
-"Attività di organizzazioni associative",
-"Riparazione di computer e di beni per uso personale e per la casa",
-"Altre attività di servizi personali",
-"Attività di famiglie e convivenze come datori di lavoro per personale domestico; produzione di beni e di servizi indifferenziati per uso proprio da parte di famiglie e convivenze"
+"Prodotti dell’agricoltura e della caccia e relativi servizi",
+"Prodotti della silvicoltura, delle operazioni di taglio e trasporto dei tronchi e servizi connessi",
+"Pesci ed altri prodotti della pesca; prodotti dell’acquacoltura; servizi di supporto per la pesca",
+"Prodotti delle miniere e delle cave",
+"Prodotti alimentari, bevande e prodotti a base di tabacco",
+"Prodotti tessili; articoli di abbigliamento; cuoio e relativi prodotti",
+"Legno e prodotti in legno e sughero (esclusi i mobili); articoli di paglia e materiali da intreccio",
+"Carta e prodotti di carta",
+"Servizi di stampa e di registrazione",
+"Coke e prodotti petroliferi raffinati",
+"Prodotti chimici",
+"Prodotti farmaceutici di base e preparati farmaceutici",
+"Articoli in gomma e in materie plastiche",
+"Altri prodotti della lavorazione di minerali non metalliferi",
+"Metalli",
+"Prodotti in metallo, esclusi macchine e impianti",
+"Prodotti informatici, elettronici ed ottici",
+"Apparecchiature elettriche",
+"Macchine ed apparecchi meccanici n.c.a.",
+"Autoveicoli, rimorchi e semirimorchi",
+"Altri mezzi di trasporto",
+"Mobilio; altri manufatti",
+"Servizi di riparazione e installazione di macchinari e apparecchi",
+"Energia elettrica, gas, vapore e aria condizionata",
+"Acqua naturale; servizi di trattamento delle acque e di produzione e distribuzione d’acqua",
+"Servizi di smaltimento delle acque di scarico; fanghi di depurazione; servizi di raccolta, trattamento e smaltimento dei rifiuti; servizi di recupero dei materiali; servizi di decontaminazione ed altri servizi di trattamento dei rifiuti",
+"Lavori di costruzione ed opere di edilizia civile",
+"Servizi di vendita all’ingrosso e al dettaglio e di riparazione di autoveicoli e motocicli",
+"Servizi di vendita all’ingrosso, escluso quello di autoveicoli e di motocicli",
+"Servizi di vendita al dettaglio, escluso quello di autoveicoli e di motocicli",
+"Servizi di trasporto terrestre e di trasporto mediante condotte",
+"Servizi di trasporto marittimo e per vie d’acqua",
+"Servizi di trasporto aereo",
+"Servizi di magazzinaggio e di supporto per i trasporti",
+"Servizi postali e di corriere",
+"Servizi di alloggio e di ristorazione",
+"Servizi di editoria",
+"Servizi di produzione di pellicole cinematografiche, di video e di programmi televisivi; edizione di registrazioni sonore e edizioni musicali; servizi di programmazione e di emissione radiofonica e televisiva",
+"Servizi di telecomunicazione",
+"Programmazione informatica, consulenze e servizi connessi; servizi d’informazione",
+"Servizi finanziari (escluse le assicurazioni e i fondi pensione)",
+"Servizi connessi alle assicurazioni, alle riassicurazioni e ai fondi pensione, escluse le assicurazioni sociali obbligatorie",
+"Servizi ausiliari dei servizi finanziari e dei servizi assicurativi",
+"Servizi immobiliari",
+"Servizi legali e contabilità; servizi di sedi sociali; servizi di consulenza in materia amministrativo-gestionale",
+"Servizi in materia di architettura e di ingegneria; servizi di sperimentazione e di analisi tecnica",
+"Servizi di ricerca e sviluppo scientifici",
+"Servizi di pubblicità e studi di mercato",
+"Altri servizi professionali, scientifici e tecnici; servizi veterinari",
+"Servizi di locazione e leasing",
+"Servizi del lavoro",
+"Servizi delle agenzie di viaggio, degli operatori turistici ed altri servizi di prenotazione e servizi connessi",
+"Servizi investigativi e di vigilanza; servizi di manutenzione degli edifici e del paesaggio; servizi amministrativi e di sostegno per le funzioni d’ufficio ed altri servizi di sostegno alle imprese",
+"Servizi di pubblica amministrazione e difesa; servizi di assicurazione sociale obbligatoria",
+"Servizi di istruzione",
+"Servizi sanitari",
+"Servizi di assistenza residenziale; servizi di assistenza sociale non residenziale",
+"Servizi creativi, artistici e d’intrattenimento; servizi di biblioteche, archivi, musei ed altri servizi culturali; servizi riguardanti il gioco d’azzardo",
+"Servizi sportivi e di intrattenimento e divertimento",
+"Servizi forniti da organizzazioni associative",
+"Servizi di riparazione di elaboratori elettronici e di beni per uso personale e domestico",
+"Altri servizi personali",
+"Servizi di datore di lavoro svolti da famiglie e convivenze; produzione di beni e servizi per uso proprio da parte di famiglie e convivenze"
 ];
 
 function creaTabella(){
@@ -326,7 +324,6 @@ function aggiornaGrafico(v){
     });
 }
 
-/* NUOVO GRAFICO PESI (COLONNA 6) */
 function aggiornaGraficoPesi(v){
 
     const ctx=document.getElementById("graficoPesi").getContext("2d");
@@ -364,6 +361,17 @@ function calcola(){
         nuova.push(domandaFinale[i]+pol);
     }
 
+    const showGraphs = sommaPolicy !== 0;
+
+    document.querySelectorAll("#grafico-container").forEach(el=>{
+        el.style.display = showGraphs ? "" : "none";
+    });
+
+    if(!showGraphs){
+        if(chart){ chart.destroy(); chart=null; }
+        if(chartPesi){ chartPesi.destroy(); chartPesi=null; }
+    }
+
     const risultato=[];
     const variazioni=[];
     let sommaDiff=0;
@@ -378,7 +386,8 @@ function calcola(){
 
         let v=((s-produzione[i])/produzione[i])*100;
         variazioni[i]=v;
-        document.getElementById("v"+i).innerText=formatPerc(v);
+        document.getElementById("v"+i).innerText =
+            (sommaPolicy===0 ? "0.00%" : formatPerc(v));
 
         let diff=s-produzione[i];
         sommaDiff+=diff;
@@ -393,24 +402,30 @@ function calcola(){
         pesi[i]=w;
         sommaPesi+=w;
 
-        document.getElementById("w"+i).innerText=w.toFixed(2)+"%";
+        document.getElementById("w"+i).innerText =
+            (sommaPolicy===0 ? "0.00%" : w.toFixed(2)+"%");
     }
 
-    document.getElementById("t7").innerText=sommaPesi.toFixed(2)+"%";
+    document.getElementById("t7").innerText =
+        (sommaPolicy===0 ? "0.00%" : sommaPesi.toFixed(2)+"%");
 
     const t5=somma(risultato);
     const base=somma(produzione);
     const t6=((t5-base)/base)*100;
 
     document.getElementById("t3policy").innerText=sommaPolicy;
+    document.getElementById("t4").innerText=formatInt(base);
     document.getElementById("t5").innerText=formatInt(t5);
-    document.getElementById("t6").innerText=formatPerc(t6);
+    document.getElementById("t6").innerText =
+        (sommaPolicy===0 ? "0.00%" : formatPerc(t6));
 
     document.getElementById("moltiplicatore").innerText=
         ((t5-base)/sommaPolicy||0).toFixed(2);
 
-    aggiornaGrafico(variazioni);
-    aggiornaGraficoPesi(pesi);
+    if(showGraphs){
+        aggiornaGrafico(variazioni);
+        aggiornaGraficoPesi(pesi);
+    }
 }
 
 window.onload=async function(){
@@ -436,7 +451,6 @@ window.onload=async function(){
 
 </body>
 </html>
-
 
 
 
