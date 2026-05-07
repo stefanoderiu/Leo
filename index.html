@@ -141,42 +141,93 @@
     }
 
     .btn-pxp,
-.btn-bxb{
+    .btn-bxb{
 
-    background:white;
-    color:#0f172a;
+        background:white;
+        color:#0f172a;
 
-    box-shadow:
-        0 10px 25px rgba(255,255,255,0.20);
+        box-shadow:
+            0 10px 25px rgba(255,255,255,0.20);
 
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        background 0.25s ease,
-        color 0.25s ease;
-}
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            background 0.25s ease,
+            color 0.25s ease;
+    }
 
-.btn-pxp:hover{
+    .btn-pxp:hover{
 
-    transform:translateY(-4px) scale(1.02);
+        transform:translateY(-4px) scale(1.02);
 
-    background:#2563eb;
-    color:white;
+        background:#2563eb;
+        color:white;
 
-    box-shadow:
-        0 18px 35px rgba(37,99,235,0.40);
-}
+        box-shadow:
+            0 18px 35px rgba(37,99,235,0.40);
+    }
 
-.btn-bxb:hover{
+    .btn-bxb:hover{
 
-    transform:translateY(-4px) scale(1.02);
+        transform:translateY(-4px) scale(1.02);
 
-    background:#0f172a;
-    color:white;
+        background:#0f172a;
+        color:white;
 
-    box-shadow:
-        0 18px 35px rgba(15,23,42,0.45);
-}
+        box-shadow:
+            0 18px 35px rgba(15,23,42,0.45);
+    }
+
+    /* DOWNLOAD SECTION */
+
+    .download-section{
+        margin-top:50px;
+    }
+
+    .download-title{
+        color:white;
+        font-size:20px;
+        font-weight:700;
+        margin-bottom:22px;
+    }
+
+    .download-buttons{
+        display:flex;
+        gap:20px;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .download-btn{
+
+        text-decoration:none;
+
+        padding:16px 24px;
+
+        border-radius:14px;
+
+        background:rgba(255,255,255,0.12);
+
+        color:white;
+
+        font-size:16px;
+        font-weight:600;
+
+        border:1px solid rgba(255,255,255,0.20);
+
+        transition:all 0.25s ease;
+    }
+
+    .download-btn:hover{
+
+        background:white;
+        color:#0f172a;
+
+        transform:translateY(-3px);
+
+        box-shadow:
+            0 12px 25px rgba(255,255,255,0.20);
+    }
 
     .footer{
         margin-top:45px;
@@ -227,10 +278,10 @@
     <h1>
         Modelli Input-Output Italia 2022
     </h1>
+	<br></br>
 
-    <div class="subtitle">
-        Seleziona il modello economico da analizzare
-    </div>
+    <div class="download-title">
+    Seleziona il modello economico</div>
 
     <div class="buttons">
 
@@ -238,13 +289,43 @@
             Prodotto × Prodotto
         </a>
 
-        <a class="btn btn-bxb" href="">
+        <a class="btn btn-bxb" href="ita_bxb.html">
             Branca × Branca
         </a>
 
     </div>
 
-    <div class="footer">
+    <!-- DOWNLOAD SECTION -->
+
+  <div class="download-section">
+
+        <div class="download-title">
+            Scarica le tavole Input-Output
+    </div>
+
+        <div class="download-buttons">
+
+            <a
+                class="download-btn"
+                href="SIMM_TOT_63PxP.xlsx"
+                download
+            >
+                Prodotto × Prodotto
+            </a>
+
+            <a
+                class="download-btn"
+                href="SIMM_TOT_63BxB.xlsx"
+                download
+            >
+                Branca × Branca
+            </a>
+
+        </div>
+
+    </div>
+
+  <div class="footer">
     <br><br>
 
     Realizzato da
