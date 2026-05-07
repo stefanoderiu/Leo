@@ -415,7 +415,7 @@ function calcola(){
 
 window.onload=async function(){
 
-    const f=await fetch("ita_pxp_2022.xlsx");
+    const f=await fetch("ita_bxb_2022.xlsx");
     const b=await f.arrayBuffer();
     const wb=XLSX.read(b,{type:"array"});
 
